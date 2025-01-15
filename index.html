@@ -1,64 +1,745 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./src/styles/reset.css" />
-    <link rel="stylesheet" href="./src/styles/header.css" />
-    <link rel="stylesheet" href="./src/styles/login.css" />
-    <script
-      src="https://kit.fontawesome.com/b1ac7e6895.js"
-      crossorigin="anonymous"
-      defer
-    ></script>
-    <script src="./src/scripts/login.js" defer></script>
-    <title>Memory Game - Login</title>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <link rel="icon" type="image/x-icon"
+    href="https://res.cloudinary.com/fotoqe123/image/upload/v1720052795/ABAUT/logo-modified_co2oj7_uaw1ee.ico">
+<link rel="canonical" href="https://lhuisruiz.github.io/15/">
+<meta property="og:site_name" content="lhuis">
+<meta property="og:title" content="lhuis">
+<meta property="og:url" content="https://lhuisruiz.github.io/15/">
+<meta property="og:type" content="website">
+<meta property="og:ttl" content="864000">
+<meta property="og:description"
+    content="Hola soy lhuis, Fotografo por diversión, Quererse a uno mismo es el principio de un romance para toda la vida. 🖤">
+<meta property="og:image"
+    content="https://res.cloudinary.com/fotoqe123/image/upload/v1730526442/ABAUT/f_10_hgcaky.jpg">
+<meta property="og:image:width" content="345">
+<meta property="og:image:height" content="518">
+<meta itemprop="name" content="lhuis">
+<meta itemprop="url" content="https://lhuisruiz.github.io/15/">
+<meta itemprop="description"
+    content="Hola soy lhuis, Fotografo por diversión, Quererse a uno mismo es el principio de un romance para toda la vida. 🖤">
+<meta itemprop="thumbnailUrl"
+    content="https://res.cloudinary.com/fotoqe123/image/upload/v1730526442/ABAUT/f_10_hgcaky.jpg">
+<meta name="twitter:title" content="lhuis">
+<meta name="twitter:image"
+    content="https://res.cloudinary.com/fotoqe123/image/upload/v1730526442/ABAUT/f_10_hgcaky.jpg">
+<meta name="twitter:url" content="https://lhuisruiz.github.io/15/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description"
+    content="Hola soy lhuis, Fotografo por diversión, Quererse a uno mismo es el principio de un romance para toda la vida. 🖤">
+<meta name="description"
+    content="Hola soy lhuis, Fotografo por diversión, Quererse a uno mismo es el principio de un romance para toda la vida. 🖤">
+<meta name="robots" content="noindex">
+
+
+
     <style>
-     
-  
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: none;
+            /* Eliminar el borde de enfoque */
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #eeeeee;
+            color: #000;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #map {
+            height: 400px;
+            width: 90%;
+            border-radius: 1px;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            background-color: #e0e0e0;
+            /* Fallback de color gris claro */
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        .leaflet-routing-container {
+            display: none !important;
+        }
+
+        .leaflet-bar,
+        .leaflet-routing-controls {
+            display: none !important;
+        }
+
+        .leaflet-control-zoom {
+            display: none !important;
+        }
+
+        h1 {
+            margin: 0px 0px 20px 0px;
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        .c-1 {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        .d-mapa {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .calculate {
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(255, 255, 255);
+            color: #000000;
+            border-radius: 1px;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+        }
+
+        input[type="date"] {
+            width: 90%;
+            height: 40px;
+            padding: 0px 20px 0px 20px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 1px;
+            background-color: #ffff;
+            cursor: pointer;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            border: none;
+            outline: none;
+            /* Eliminar el borde de enfoque */
+        }
+
+        /* Estilo cuando el calendario está abierto */
+        input[type="date"]:focus {
+            border-color: #000000;
+            background-color: #ffffff;
+        }
+
+        .dark-mode input[type="date"] {
+            width: 90%;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            outline: none;
+            box-shadow: 3px 3px 10px 5px #bbbbbb00;
+
+
+        }
+
+        .whatsapp {
+            margin-top: 10px;
+            margin-bottom: 40px;
+            padding: 10px;
+            border: none;
+            background-color: rgb(6, 250, 39);
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            color: rgb(0, 0, 0);
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #destination-name {
+            width: 90%;
+            height: 40px;
+            padding: 0px 20px 0px 20px;
+            border-radius: 1px;
+            background-color: #ffffff;
+            cursor: pointer;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .c-1 {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        .check2 {
+            margin-left: 20px;
+        }
+
+        .check {
+            width: 97%;
+            height: 40px;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: row;
+            background-color: #fff;
+            padding-left: 11px;
+            align-items: center;
+            font-size: 12px;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            margin-bottom: 20px
+        }
+
+        .msj {
+            width: 97%;
+            height: 50px;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: row;
+            background-color: #fff;
+            padding-left: 11px;
+            align-items: center;
+            box-shadow: 3px 3px 10px 5px #bbbbbbb4;
+            margin-bottom: 20px
+        }
+
+
+
+
+        #theme-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background-color: #b6060600;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            transition: background-color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            background: #e7e7e7;
+        }
+
+
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode .check {
+            background-color: #444;
+            color: #9b9b9bde;
+            box-shadow: 3px 3px 10px 5px #bbbbbb00;
+        }
+
+        .dark-mode .msj {
+            background-color: #444;
+            color: #9b9b9bde;
+            box-shadow: 3px 3px 10px 5px #bbbbbb00;
+        }
+
+        .dark-mode #theme-toggle {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode #theme-toggle:hover {
+            background-color: #444;
+        }
+
+        .dark-mode #map {
+            box-shadow: 3px 3px 20px 5px #bbbbbb13;
+
+        }
+
+        .dark-mode #calculate {
+            box-shadow: 3px 3px 20px 5px #bbbbbb00;
+            background-color: #333;
+            color: #fff;
+
+        }
+
+        .dark-mode #whatsapp {
+            background-color: #000;
+            color: white;
+            box-shadow: 3px 3px 10px 5px #bbbbbb00;
+        }
+
+        .dark-mode #destination-name {
+            box-shadow: 3px 3px 20px 5px #bbbbbb00;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode #destination-name:focus {
+            box-shadow: 3px 3px 20px 5px #bbbbbb00;
+            background-color: #333;
+            color: #fff;
+        }
+
+        #destinationN {
+            width: 90%;
+            max-width: 400px;
+            padding: 10px;
+            font-size: 10px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .vide {
+            width: 100%;
+            height: auto;
+            margin-top: 100px;
+            margin-bottom: 100px;
+            display: flex;
+            justify-content: center;
+
+        }
+
+        .yt {
+            width: 560;
+            height: 315;
+        }
+
+        @media (max-width: 500px) {
+            .c-1 {
+                width: 100%;
+                height: auto;
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                flex-wrap: nowrap;
+            }
+        }
+
+        @media (min-width: 501px) {
+            .c-1 {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .container {
+                width: 400px;
+                height: 500px;
+                display: flex;
+                flex-direction: column;
+            }
+
+
+        }
+
+        @media (min-width: 701px) {
+            .container {
+                width: 700px;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <main>
-      <div>
-        <input type="checkbox" name="checkbox" id="checkbox" />
-        <label for="checkbox" class="label">
-          <i class="fas fa-moon"></i>
-          <i class="fas fa-sun"></i>
-          <div class="ball"></div>
-        </label>
-      </div>
-      <form class="login-form">
-        <div class="login-header">
-          <img src="./src/images/brain.png" alt="" />
-          <h1>Memory Game</h1>
+</head>
+
+<body>
+    <div class="c-1">
+        <div class="container">
+            <h1>Calcular Precios 📷 </h1>
+            <label for="date">Fecha Del Evento:</label>
+            <input type="date" id="date">
+            <br><br>
+
+            <label for="destination-name">Ubicacion Del Evento: </label>
+            <input type="text" id="destination-name" placeholder="Ej: Pilar La Lonja" />
+            <br><br>
+            <div class="check">
+                <!-- Checkbox para seleccionar si es media jornada -->
+                <label for="mitadcompleta">Media jornada hast 2 am.</label>
+                <input type="checkbox" class="check2" class="mitadcompleta" id="mitadcompleta" />
+            </div>
+            <div class="msj">
+                <input type="text" id="destinationN" placeholder="Donde sacamos fotos con el vestido?">
+
+            </div>
+            <button class="calculate" id="calculate">Buscar y Calcular</button>
+            <br><br>
+
+            <div id="details">
+                <p id="result"></p>
+                <button class="whatsapp" id="whatsapp" style="display:none;">Enviar a WhatsApp</button>
+            </div>
+        </div>
+        <div class="d-mapa">
+            <div id="map"></div>
         </div>
 
-        <input
-          type="text"
-          placeholder="Name"
-          class="login-input"
-          required
-          minlength="3"
-          maxlength="16"
-        />
-        <button type="submit" class="login-button" disabled>
-          Play <i class="fa-solid fa-play fa-lg"></i>
-        </button>
-      </form>
-    </main>
-    <div>
-    
-    
-  </body> 
-  <a href="src/pages/h.html" > <button class="btn-fijo" ></button></a>
+    </div>
+    <div class="vide">
+        <iframe class="yt" src="https://www.youtube.com/embed/4eFwOGjI5BQ?si=FFyg2wvYFWtR5rMQ"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+    <script>
+
+
+
+
+        const initialPoint = [-34.452115, -58.826254];
+        const map = L.map('map').setView(initialPoint, 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        });
+
+        const darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.carto.com/">CartoDB</a>'
+        });
+        let routeControl;
+        let destinationMarker;
+        let selectedDestination = null;
+        let destinationName = "";
+
+        const locationIcon = L.icon({
+            iconUrl: 'https://unpkg.com/leaflet/dist/images/marker-icon.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        // Evento al seleccionar un punto en el mapa
+        map.on('click', (e) => {
+            selectedDestination = [e.latlng.lat, e.latlng.lng];
+            destinationName = "Ubicación seleccionada en el mapa";
+            setDestinationMarker(selectedDestination, destinationName);
+        });
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            const whatsappButton = document.getElementById('whatsapp');
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                icon.className = 'fas fa-moon';
+                map.removeLayer(darkTiles);
+                lightTiles.addTo(map);
+                currentTiles = lightTiles;
+            } else {
+                body.classList.add('dark-mode');
+                icon.className = 'fas fa-sun';
+                map.removeLayer(lightTiles);
+                darkTiles.addTo(map);
+                currentTiles = darkTiles;
+            }
+        });
+
+
+        document.getElementById('calculate').addEventListener('click', () => {
+            const date = document.getElementById('date').value;
+            const inputDestinationName = document.getElementById('destination-name').value;
+
+            // Usar el nombre del destino ingresado si existe, de lo contrario mantener el seleccionado en el mapa
+            if (inputDestinationName) {
+                destinationName = inputDestinationName;
+            }
+
+            if (!selectedDestination && !inputDestinationName) {
+                alert("Por favor, selecciona un punto en el mapa o escribe un destino.");
+                return;
+            }
+
+            if (!date) {
+                alert("Por favor, selecciona una fecha.");
+                return;
+            }
+
+            if (inputDestinationName && !selectedDestination) {
+                // Si se ingresó un destino, buscarlo en el mapa
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(inputDestinationName)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            alert("No se encontró la ubicación escrita. Intenta con otra.");
+                            return;
+                        }
+
+                        const { lat, lon } = data[0];
+                        selectedDestination = [parseFloat(lat), parseFloat(lon)];
+                        setDestinationMarker(selectedDestination, inputDestinationName);
+                        const month = new Date(date).getMonth();
+                        calculateRoute(initialPoint, selectedDestination, month, date, destinationName);
+                    })
+
+            } else {
+                // Si ya hay una ubicación seleccionada en el mapa
+                const month = new Date(date).getMonth();
+                calculateRoute(initialPoint, selectedDestination, month, date, destinationName);
+            }
+        });
+
+        function setDestinationMarker(destination, popupText) {
+            if (destinationMarker) {
+                map.removeLayer(destinationMarker);
+            }
+
+            destinationMarker = L.marker(destination, { icon: locationIcon })
+                .addTo(map)
+                .bindPopup(popupText)
+                .openPopup();
+
+            map.setView(destination, 13);
+        }
+
+        function calculateRoute(origin, destination, month, date, destinationName) {
+            if (routeControl) {
+                map.removeControl(routeControl);
+            }
+
+            routeControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(origin[0], origin[1]),
+                    L.latLng(destination[0], destination[1])
+                ],
+                routeWhileDragging: true,
+                lineOptions: {
+                    styles: [{ color: '#00000000', weight: 4, opacity: 0.2 }]
+                },
+                createMarker: () => null,
+                showAlternatives: false,
+                instructions: false
+            }).addTo(map);
+
+            // whatsapppp--------------------------------
+
+            routeControl.on('routesfound', (e) => {
+    const routes = e.routes;
+    const distance = routes[0].summary.totalDistance / 1000;
+
+    let basePrice = 100000 + (month * 3000);
+    let totalPrice = basePrice;
+
+    let extraKm = distance - 3;
+    if (extraKm > 0) {
+        totalPrice += extraKm * 2000;
+    }
+
+    document.getElementById('calculate').addEventListener('click', () => {
+        const date = document.getElementById('date').value;
+        const inputDestinationName = document.getElementById('destination-name').value;
+
+        // Usar el nombre del destino ingresado si existe, de lo contrario mantener el seleccionado en el mapa
+        if (inputDestinationName) {
+            destinationName = inputDestinationName;
+        }
+
+        if (!selectedDestination && !inputDestinationName) {
+            alert("Por favor, selecciona un punto en el mapa o escribe un destino.");
+            return;
+        }
+
+        if (!date) {
+            alert("Por favor, selecciona una fecha.");
+            return;
+        }
+
+        const isHalfDay = document.getElementById('mitadcompleta').checked; // Verificar si el checkbox está marcado
+
+        if (inputDestinationName && !selectedDestination) {
+            // Si se ingresó un destino, buscarlo en el mapa
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(inputDestinationName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        alert("No se encontró la ubicación escrita. Intenta con otra.");
+                        return;
+                    }
+
+                    const { lat, lon } = data[0];
+                    selectedDestination = [parseFloat(lat), parseFloat(lon)];
+                    setDestinationMarker(selectedDestination, inputDestinationName);
+                    const month = new Date(date).getMonth();
+                    calculateRoute(initialPoint, selectedDestination, month, date, destinationName, isHalfDay); // Pasar el valor del checkbox
+                })
+
+        } else {
+            // Si ya hay una ubicación seleccionada en el mapa
+            const month = new Date(date).getMonth();
+            calculateRoute(initialPoint, selectedDestination, month, date, destinationName, isHalfDay); // Pasar el valor del checkbox
+        }
+    });
+
+    destinationName = document.getElementById('destination-name');
+    destinationName = document.getElementById('destination-name').value;
+
+    // Nueva variable para obtener el valor del input 'destinationN'
+    const destinationNValue = document.getElementById('destinationN').value; // Aquí obtenemos el valor del input
+
+    function calculateRoute(origin, destination, month, date, destinationName, isHalfDay) {
+        if (routeControl) {
+            map.removeControl(routeControl);
+        }
+
+        routeControl = L.Routing.control({
+            waypoints: [
+                L.latLng(origin[0], origin[1]),
+                L.latLng(destination[0], destination[1])
+            ],
+            routeWhileDragging: true,
+            lineOptions: {
+                styles: [{ color: '#00000000', weight: 4, opacity: 0.2 }]
+            },
+            createMarker: () => null,
+            showAlternatives: false,
+            instructions: false
+        }).addTo(map);
+
+        routeControl.on('routesfound', (e) => {
+            const routes = e.routes;
+            const distance = routes[0].summary.totalDistance / 1000;
+
+            let basePrice = 100000 + (month * 3000);
+            let totalPrice = basePrice;
+
+            let extraKm = distance - 3;
+            if (extraKm > 0) {
+                totalPrice += extraKm * 2000;
+            }
+
+            // Aplicar descuento si es media jornada
+            if (isHalfDay) {
+                totalPrice *= 0.7;
+            }
+
+            totalPrice = totalPrice.toFixed(0);
+            const formattedDate = new Date(date).toLocaleDateString('es-ES');
+
+            const resultText =
+                `Destino: ${destinationName}<br>` +
+                `Ubicación escrita: ${destinationNValue}<br>` +  // Mostrar el valor ingresado en 'destinationN'
+                `Fecha: ${formattedDate}<br>` +
+                `Distancia: ${distance.toFixed(2)} km<br>` +
+                `Precio: $${totalPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` +
+                `<br>Media jornada: ${isHalfDay ? 'Sí' : 'No'}`;  // Mostrar si es media jornada o no
+
+            document.getElementById('result').innerHTML = resultText;
+
+            const googleMapsLink = `https://www.google.com/maps?q=${destination[0]},${destination[1]}`;
+            const whatsappMessage = encodeURIComponent(`Destino: ${destinationName}\nUbicación: ${destinationNValue}\nFecha: ${formattedDate}\nDistancia: ${distance.toFixed(2)} km\nPrecio: $${totalPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\nMedia jornada: ${isHalfDay ? 'Sí' : 'No'}\nMapa: ${googleMapsLink}`);
+            const whatsappLink = `https://wa.me/541144382987?text=${whatsappMessage}`;
+
+            const whatsappButton = document.getElementById('whatsapp');
+            whatsappButton.style.display = 'inline-block';
+            whatsappButton.onclick = () => {
+                window.open(whatsappLink, '_blank');
+            };
+        });
+
+        routeControl.on('routingerror', () => {
+            alert("No se pudo calcular la ruta. Intenta con otra ubicación.");
+        });
+    }
+
+    totalPrice = totalPrice.toFixed(0);
+    const formattedDate = new Date(date).toLocaleDateString('es-ES');
+
+    const resultText =
+        `Destino: ${destinationName}<br>` +
+        `Fecha: ${formattedDate}<br>` +
+        `Distancia: ${distance.toFixed(2)} km<br>` +
+        `Precio: $${totalPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` +
+        `<br>Media jornada: ${isHalfDay ? 'Sí' : 'No'}`;  // Mostrar si es media jornada o no
+
+    document.getElementById('result').innerHTML = resultText;
+
+    const googleMapsLink = `https://www.google.com/maps?q=${destination[0]},${destination[1]}`;
+    const whatsappMessage = encodeURIComponent(`Destino: ${destinationName}\nFecha: ${formattedDate}\nDistancia: ${distance.toFixed(2)} km\nPrecio: $${totalPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}\nMedia jornada: ${isHalfDay ? 'Sí' : 'No'}\nMapa: ${googleMapsLink}`);
+    const whatsappLink = `https://wa.me/541144382987?text=${whatsappMessage}`;
+
+    const whatsappButton = document.getElementById('whatsapp');
+    whatsappButton.style.display = 'inline-block';
+    whatsappButton.onclick = () => {
+        window.open(whatsappLink, '_blank');
+    };
+});
+
+
+            // whatsapppp--------------------------------
+
+           
+
+
+            document.getElementById('half-day').addEventListener('click', () => {
+                alert("Funcionalidad de Media Jornada aún no implementada.");
+            });
+
+            document.getElementById('full-day').addEventListener('click', () => {
+                alert("Funcionalidad de Jornada Completa aún no implementada.");
+            });
+
+
+
+            // Cambia la capa del mapa a una de estilo oscuro
+            const darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://carto.com/">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://carto.com/">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+
+
+
+
+            // Aplicar el descuento si el checkbox está marcado
+            if (isHalfDay) { // <-- Lógica del descuento
+                totalPrice = totalPrice * 0.7; // 30% de descuento
+            }
+
+
+        }
+    </script>
+</body>
 
 </html>
